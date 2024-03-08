@@ -66,7 +66,7 @@ export default function Home() {
     if (fileInput) {
       fileInput.addEventListener("change", onChangeFileInput);
     }
-  }, []);
+  }, [onChangeFileInput]);
 
   return (
     <main
