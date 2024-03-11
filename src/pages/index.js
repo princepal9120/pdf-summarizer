@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from 'next/image'
 
 const SUMARIZE_URL = "http://localhost:3000/api/summarize";
 
@@ -47,7 +48,7 @@ export default function Home() {
     });
   };
 
-  const onChangeFileInput = (event) => {
+  const onChangeFileInput = React.useCallback((event) => {
     const file = event.target.files[0];
     if (file.type !== "application/pdf") {
       console.error(file.name, "is not a PDF file.");
@@ -59,13 +60,20 @@ export default function Home() {
     fileReader.onload = onLoadFile;
 
     fileReader.readAsArrayBuffer(file);
-  };
-
+  }, [onLoadFile]);
+  
   React.useEffect(() => {
     const fileInput = document.getElementById("file-input");
     if (fileInput) {
       fileInput.addEventListener("change", onChangeFileInput);
     }
+
+    // Clean up event listener on component unmount
+    return () => {
+      if (fileInput) {
+        fileInput.removeEventListener("change", onChangeFileInput);
+      }
+    };
   }, [onChangeFileInput]);
 
   return (
@@ -129,11 +137,11 @@ export default function Home() {
         </div>
       </div>
       <div className="absolute left-0 right-0 top-0 -z-50">
-        <img
-          className="object-fit h-[100vh] w-full opacity-50"
-          src="./background.webp"
-          alt="background"
-        />
+      <Image
+  className="object-fit h-[100vh] w-full opacity-50"
+  src={{ src: "/background.webp", width: 1920, height: 1080 }} // Adjust width and height accordingly
+  alt="background"
+/>
       </div>
     </main>
   );
